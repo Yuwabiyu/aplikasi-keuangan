@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Aplikasi Keuangan</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .welcome-message {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .welcome-message strong {
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <h1>💰 Aplikasi Keuangan</h1>
+        <ul class="nav-links">
+            <li><a href="/">Beranda</a></li>
+            <li><a href="/products">Produk</a></li>
+            <li><a href="/profile">Profile</a></li>
+        </ul>
+        <div class="user-info">
+            <span id="username">Admin</span>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="welcome-message">
+            Selamat datang, <strong id="usernameDisplay">Admin</strong>!
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-title">📦 Total Produk</div>
+                <div class="card-value" id="totalProducts">-</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💵 Total Nilai Stok</div>
+                <div class="card-value" id="totalValue">-</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Kategori</div>
+                <div class="card-value" id="totalCategories">-</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⚠️ Stok Rendah</div>
+                <div class="card-value" id="lowStock">-</div>
+            </div>
+        </div>
+
+        <!-- Recent Products -->
+        <div class="card">
+            <h2>Produk Terbaru</h2>
+            <table class="table" id="recentProductsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Kategori</th>
+                        <th>Nilai</th>
+                    </tr>
+                </thead>
+                <tbody id="recentProducts">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem;">
+                            Memuat data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 1rem;">
+                <a href="/products" class="btn btn-primary">Lihat Semua Produk</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script>
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const response = await apiCall("/products", { method: "GET" });
+                
+                if (response && response.length > 0) {
+                    // Calculate statistics
+                    const totalProducts = response.length;
+                    const totalValue = response.reduce((sum, p) => sum + (p.price * p.stock), 0);
+                    const categories = new Set(response.map(p => p.category)).size;
+                    const lowStock = response.filter(p => p.stock < 10).length;
+
+                    // Update cards
+                    document.getElementById("totalProducts").textContent = totalProducts;
+                    document.getElementById("totalValue").textContent = formatCurrency(totalValue);
+                    document.getElementById("totalCategories").textContent = categories;
+                    document.getElementById("lowStock").textContent = lowStock;
+
+                    // Show recent products (last 5)
+                    const recent = response.slice(-5).reverse();
+                    const tbody = document.getElementById("recentProducts");
+                    tbody.innerHTML = recent.map(p => `
+                        <tr>
+                            <td>${p.id}</td>
+                            <td>${p.name}</td>
+                            <td>${formatCurrency(p.price)}</td>
+                            <td>${p.stock}</td>
+                            <td>${p.category}</td>
+                            <td>${formatCurrency(p.price * p.stock)}</td>
+                        </tr>
+                    `).join("");
+                } else {
+                    document.getElementById("recentProducts").innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                Belum ada data produk
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById("recentProducts").innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: red;">
+                            Gagal memuat data
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            try {
+                await fetch("/api/auth/logout", { method: "POST" });
+                showAlert("Logout berhasil", "success");
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1000);
+            } catch (error) {
+                showAlert("Terjadi kesalahan", "danger");
+            }
+        });
+
+        // Load data on page load
+        loadDashboard();
+    </script>
+</body>
+</html>

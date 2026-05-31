@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Aplikasi Keuangan</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info {
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .info-value {
+            color: #7f8c8d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--light-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .activity-section {
+            margin-top: 2rem;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <h1>💰 Aplikasi Keuangan</h1>
+        <ul class="nav-links">
+            <li><a href="/">Beranda</a></li>
+            <li><a href="/products">Produk</a></li>
+            <li><a href="/profile">Profile</a></li>
+        </ul>
+        <div class="user-info">
+            <span id="username">Admin</span>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="profile-container">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-name" id="displayName">Admin</div>
+                <p style="color: #7f8c8d;">Administrator - Sistem Manajemen Produk</p>
+
+                <!-- Profile Info -->
+                <div class="profile-info">
+                    <div class="info-item">
+                        <span class="info-label">Username:</span>
+                        <span class="info-value" id="infoUsername">Yuwa</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">Yuwaanggada@gmail.com</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Role:</span>
+                        <span class="info-value">Administrator</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value"><span style="color: var(--success-color);">●</span> Aktif</span>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProductsStat">-</div>
+                        <div class="stat-label">Total Produk</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalValueStat">-</div>
+                        <div class="stat-label">Nilai Stok</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <h3>Aktivitas Terbaru</h3>
+                <div id="activityList">
+                    <div class="activity-item">
+                        <p>✓ Login ke sistem</p>
+                        <span class="activity-time">Hari ini</span>
+                    </div>
+                    <div class="activity-item">
+                        <p>📝 Mengakses halaman produk</p>
+                        <span class="activity-time">Hari ini</span>
+                    </div>
+                    <div class="activity-item">
+                        <p>👁️ Melihat dashboard</p>
+                        <span class="activity-time">Hari ini</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="btn-group" style="margin-top: 2rem; justify-content: center;">
+                <button class="btn btn-primary" id="editProfileBtn">Edit Profile</button>
+                <button class="btn btn-warning" id="logoutBtn2">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script>
+        // Load profile statistics
+        async function loadProfileStats() {
+            try {
+                const products = await apiCall("/products");
+                
+                const totalProducts = products.length;
+                const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
+
+                document.getElementById("totalProductsStat").textContent = totalProducts;
+                document.getElementById("totalValueStat").textContent = formatCurrency(totalValue);
+            } catch (error) {
+                console.error("Failed to load statistics");
+            }
+        }
+
+        // Logout
+        function logout() {
+            fetch("/api/auth/logout", { method: "POST" })
+                .then(() => {
+                    showAlert("Logout berhasil", "success");
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 1000);
+                })
+                .catch(() => {
+                    showAlert("Terjadi kesalahan", "danger");
+                });
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", logout);
+        document.getElementById("logoutBtn2").addEventListener("click", logout);
+
+        document.getElementById("editProfileBtn").addEventListener("click", () => {
+            showAlert("Fitur edit profile akan segera tersedia", "info");
+        });
+
+        // Load data on page load
+        loadProfileStats();
+    </script>
+</body>
+</html>
